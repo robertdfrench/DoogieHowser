@@ -3,6 +3,15 @@ DoogieHowser
 
 An MD package that's too big for its shorts
 
+### Installing
+
+Installing DoogieHowser follows the normal conventions for GNU-style packages:
+
+* `./configure`
+* `make install`
+
+The `configure` script takes the usual options, such as `--prefix` for installing to non-standard locations. This is recommended if, for example, installing on a system where you do not have sudo access (likely the case for users of most HPC systems). If you are installing on an unsupported system (currently, anything other than old versions of Mac OS X), you are advised also to run `make check`. 
+
 ### Developers
 
 Setting up the DoogieHowser development environment on Mac OS X can be done easily via (Homebrew)[http://brew.sh/]:

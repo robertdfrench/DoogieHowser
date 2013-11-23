@@ -3,6 +3,6 @@
 lib_LTLIBRARIES = libforce.la
 libforce_la_SOURCES = force.c force.h
 
-bin_PROGRAMS = main
-main_SOURCES = main.c
-main_LDADD = libforce.la
+bin_PROGRAMS = main.exe
+main_exe_SOURCES = main.c
+main_exe_LDADD = libforce.la

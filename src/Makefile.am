@@ -1,8 +1,8 @@
 ## Process this file with automake to produce Makefile.in
 
-lib_LTLIBRARIES = libmoney.la
-libmoney_la_SOURCES = money.c money.h
+lib_LTLIBRARIES = libforce.la
+libforce_la_SOURCES = force.c force.h
 
 bin_PROGRAMS = main
 main_SOURCES = main.c
-main_LDADD = libmoney.la
+main_LDADD = libforce.la

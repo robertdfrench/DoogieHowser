@@ -1,12 +1,15 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <check.h>
 #include "../src/force.h"
 
 START_TEST (test_force_is_zero_for_same_particle)
 {
-  double x1,y1 = 0.1;
-  int force = (int) force_calculate_magnitude(x1,y1,x1,y1);
-  ck_assert_int_eq(force, 0);
+  double x1 = 0.1;
+  double y1 = 0.1;
+  double force = force_calculate_magnitude(x1,y1,x1,y1);
+  printf("force is %f\n", force);
+  ck_assert_msg(force > -0.01 && force < 0.01,"Was disappointed to find that force == %f", force);
 }
 END_TEST
 

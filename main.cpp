@@ -14,6 +14,18 @@ lua_State* launch_lua() {
   return L;
 }
 
+int dhmd_num_particles = 0;
+int get_num_particles(lua_State *L) {
+  int argc = lua_gettop(L);
+  lua_pushnumber(L, dhmd_num_particles);
+  return 1;
+}
+
+int add_particle(lua_State *L) {
+  dhmd_num_particles++;
+  return 0;
+}
+
 void run_lua_file(lua_State* L, char* filename) {
   std::cerr << "-- Loading Lua file: " << filename << std::endl;
 
@@ -34,6 +46,8 @@ void end_lua(lua_State* L) {
 
 int main(int argc, char** argv) {
   lua_State* L = launch_lua();
+  lua_register(L, "get_num_particles", get_num_particles);
+  lua_register(L, "add_particle", add_particle);
   run_lua_file(L, argv[1]);
   end_lua(L);
   return 0;

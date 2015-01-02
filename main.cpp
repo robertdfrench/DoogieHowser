@@ -1,5 +1,33 @@
 #include <iostream>
+#include <vector>
 #include "lua.hpp"
+
+struct Particle {
+  float x;
+  float y;
+  float z;
+  float mass;
+};
+
+class ParticleEnsemble {
+    std::vector<Particle> particle_storage;
+  public:
+    ParticleEnsemble(int max_particles);
+    void addParticle(Particle p);
+    int numParticles();
+}
+
+ParticleEnsemble::ParticleEnsemble(int max_particles) {
+  particle_storage = new std::vector<Particle>(max_particles);
+}
+
+void ParticleEnsemble::addParticle(Particle p) {
+  particle_storage.push_bash(p);
+}
+
+int ParticleEnsemble::numParticles() {
+  return particle_storage.size();
+}
 
 void report_errors(lua_State *L, int status) {
   if (status != 0) {
@@ -14,15 +42,24 @@ lua_State* launch_lua() {
   return L;
 }
 
-int dhmd_num_particles = 0;
 int get_num_particles(lua_State *L) {
   int argc = lua_gettop(L);
-  lua_pushnumber(L, dhmd_num_particles);
+  lua_pushnumber(L, gpe.numParticles());
   return 1;
 }
 
+int initialize_particle_ensemble(lua_State *L) {
+  int argc = lua_gettop(L);
+  if (argc == 1) {
+    int num_particles = (int)lua_tonumber(L, 1);
+    gpe = new ParticleEnsemble(num_particles);
+  }
+  return 0;
+}
+
 int add_particle(lua_State *L) {
-  dhmd_num_particles++;
+  Particle p;
+  gpe.addParticle(p);
   return 0;
 }
 
@@ -44,10 +81,12 @@ void end_lua(lua_State* L) {
 }
   
 
+ParticleEnsemble gpe;
 int main(int argc, char** argv) {
   lua_State* L = launch_lua();
   lua_register(L, "get_num_particles", get_num_particles);
   lua_register(L, "add_particle", add_particle);
+  lua_register(L, "initialize_particle_ensemble",initialize_particle_ensemble);
   run_lua_file(L, argv[1]);
   end_lua(L);
   return 0;

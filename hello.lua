@@ -1,6 +1,6 @@
--- the first program in every language
-io.write("Hello world, from ",_VERSION,"!\n")
+initialize_particle_ensemble()
+io.write("The particle ensemble has been initialized\n")
 io.write("There are currently ", get_num_particles(), " particles in the system\n")
-add_particle()
-add_particle()
+add_particle(1,2.14,316.78)
+add_particle(0.0,-12,40)
 io.write("But now there are ", get_num_particles(), " particles in the system\n")

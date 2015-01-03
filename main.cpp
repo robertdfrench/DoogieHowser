@@ -10,23 +10,24 @@ struct Particle {
 };
 
 class ParticleEnsemble {
-    std::vector<Particle> particle_storage;
+    std::vector<Particle>* particle_storage;
   public:
-    ParticleEnsemble(int max_particles);
+    ParticleEnsemble();
     void addParticle(Particle p);
     int numParticles();
-}
+};
+ParticleEnsemble* gpe; //Global Particle Ensemble
 
-ParticleEnsemble::ParticleEnsemble(int max_particles) {
-  particle_storage = new std::vector<Particle>(max_particles);
+ParticleEnsemble::ParticleEnsemble() {
+  particle_storage = new std::vector<Particle>();
 }
 
 void ParticleEnsemble::addParticle(Particle p) {
-  particle_storage.push_bash(p);
+  particle_storage->push_back(p);
 }
 
 int ParticleEnsemble::numParticles() {
-  return particle_storage.size();
+  return particle_storage->size();
 }
 
 void report_errors(lua_State *L, int status) {
@@ -37,29 +38,30 @@ void report_errors(lua_State *L, int status) {
 }
 
 lua_State* launch_lua() {
-  lua_State *L = lua_open();
+  lua_State *L = luaL_newstate();
   luaL_openlibs(L);
   return L;
 }
 
 int get_num_particles(lua_State *L) {
   int argc = lua_gettop(L);
-  lua_pushnumber(L, gpe.numParticles());
+  lua_pushnumber(L, gpe->numParticles());
   return 1;
 }
 
 int initialize_particle_ensemble(lua_State *L) {
-  int argc = lua_gettop(L);
-  if (argc == 1) {
-    int num_particles = (int)lua_tonumber(L, 1);
-    gpe = new ParticleEnsemble(num_particles);
-  }
+  gpe = new ParticleEnsemble();
   return 0;
 }
 
 int add_particle(lua_State *L) {
+  int argc = lua_gettop(L);
   Particle p;
-  gpe.addParticle(p);
+  if (argc >= 1) { p.x = lua_tonumber(L, 1); lua_pop(L, 1); }
+  if (argc >= 2) { p.y = lua_tonumber(L, 1); lua_pop(L, 1); }
+  if (argc >= 3) { p.z = lua_tonumber(L, 1); lua_pop(L, 1); }
+  
+  gpe->addParticle(p);
   return 0;
 }
 
@@ -81,7 +83,6 @@ void end_lua(lua_State* L) {
 }
   
 
-ParticleEnsemble gpe;
 int main(int argc, char** argv) {
   lua_State* L = launch_lua();
   lua_register(L, "get_num_particles", get_num_particles);
